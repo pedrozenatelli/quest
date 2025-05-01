@@ -3,6 +3,8 @@ import streamlit as st
 import openai
 import sqlite3
 import time
+import streamlit as st
+openai.api_key = st.secrets["openai"]["api_key"]
 
 # Configurações iniciais do Streamlit
 st.set_page_config(page_title="Gerador de Questões de Concurso", page_icon="📝", layout="centered")
@@ -31,7 +33,7 @@ def salvar_questao(nome_lei, texto_lei, questoes_geradas):
 
 # Função para gerar questões com OpenAI
 def gerar_questoes(texto_lei, nome_lei):
-    openai.api_key = "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"
+    openai.api_key = "XXXX"
 
     prompt = f"""
 Você é um especialista em elaboração de questões para concursos públicos.
@@ -42,7 +44,7 @@ Instruções:
 - 10 questões.
 - Varie entre "marque a alternativa correta" e "marque a alternativa incorreta".
 - Sempre informe o GABARITO e explique brevemente citando o artigo da lei.
-- NÃO invente informações.
+- NÃO invente informações, seja fiel ao texto inserido.
 
 Texto da Lei:
 {texto_lei}
