@@ -33,7 +33,7 @@ def salvar_questao(nome_lei, texto_lei, questoes_geradas):
 
 # Função para gerar questões com OpenAI
 def gerar_questoes(texto_lei, nome_lei):
-    openai.api_key = "XXXX"
+    openai.api_key = st.secrets["openai"]["api_key"]
 
     prompt = f"""
 Você é um especialista em elaboração de questões para concursos públicos.
@@ -41,10 +41,59 @@ Você é um especialista em elaboração de questões para concursos públicos.
 Sua função é criar questões de múltipla escolha, baseadas exclusivamente no texto da lei fornecida.
 
 Instruções:
-- 10 questões.
-- Varie entre "marque a alternativa correta" e "marque a alternativa incorreta".
-- Sempre informe o GABARITO e explique brevemente citando o artigo da lei.
-- NÃO invente informações, seja fiel ao texto inserido.
+Crie exatamente 10 questões de múltipla escolha.
+
+Cada enunciado deve começar com algo semelhante a uma destas variações, substituindo corretamente pela lei fornecida na variável nome_lei (exemplo: Constituição Federal):
+
+"Sobre a/o <b>{nome_lei}</b>, assinale a alternativa correta/incorreta."
+
+"De acordo com a/o <b>{nome_lei}</b>, assinale a alternativa correta/incorreta."
+
+"Acerca da/do <b>{nome_lei}</b>, assinale a alternativa correta/incorreta."
+
+Alterne entre instruções de "assinale a alternativa correta" e "assinale a alternativa incorreta".
+
+As alternativas devem ser nomeadas como A, B, C e D, mas **NÃO** inclua "A)" ou letras antes do texto da alternativa. Em vez disso, insira uma marcação invisível para cada uma, como:
+
+###ALTERNATIVA_A###
+texto da alternativa A
+
+###ALTERNATIVA_B###
+texto da alternativa B
+
+###ALTERNATIVA_C###
+texto da alternativa C
+
+###ALTERNATIVA_D###
+texto da alternativa D
+
+O enunciado deve ser precedido por:
+###ENUNCIADO###
+
+Sempre informe o gabarito e a explicação com as seguintes marcações:
+
+###GABARITO###
+<b>GABARITO:</b> [Letra correta]
+
+Após a [Letra correta] do GABARITO, salte UMA linha
+
+<b>EXPLICAÇÃO:</b> Breve justificativa mencionando o artigo da lei que fundamenta a resposta.
+
+Após a explicação, salte UMA linha e insira o texto literal com a seguinte marcação:
+
+<span style=\"background-color:#ffffcc\">[TEXTO LITERAL]</span>
+
+Essa estrutura permitirá exportar para uma planilha com as seguintes colunas:
+COLUNA 1: ENUNCIADO
+COLUNA 2: EXPLICAÇÃO
+COLUNA 3: ALTERNATIVA A
+COLUNA 4: ALTERNATIVA B
+COLUNA 5: ALTERNATIVA C
+COLUNA 6: ALTERNATIVA D
+COLUNA 7: LETRA DO GABARITO (A, B, C ou D)
+COLUNA 8: TEXTO DA EXPLICAÇÃO
+
+Não invente dados. Use apenas o texto real da lei fornecida. Seja fiel ao conteúdo legal ao formular tanto as alternativas quanto o gabarito.
 
 Texto da Lei:
 {texto_lei}
